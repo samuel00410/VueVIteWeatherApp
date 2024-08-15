@@ -10,7 +10,7 @@
             找不到相關地點，請重新輸入
           </p>
           <template v-else>
-            <li v-for="searchResult in mapboxSearchResults" :key="searchResult.id" class="py-2 cursor-pointer">
+            <li @click="previewCity(searchResult)" v-for="searchResult in mapboxSearchResults" :key="searchResult.id" class="py-2 cursor-pointer">
               {{ searchResult.place_name }}
             </li>
           </template>
@@ -23,7 +23,9 @@
 <script setup>
 import {ref} from "vue";
 import axios from "axios";
+import {useRouter} from "vue-router";
 
+const router = useRouter();
 const searchQuery = ref("");
 const queryTimeout = ref(null);
 const mapboxSearchResults = ref(null);
@@ -31,12 +33,29 @@ const searchError = ref(null);
 
 const mapboxAPIKey = import.meta.env.VITE_API_KEY
 
+const previewCity = (result)=>{
+  console.log(result);
+  const city = result.place_name.split(",")[1];
+  const state = result.place_name.split(",")[0];
+  console.log("縣市:",city);
+  console.log("地區:",state);
+  router.push({
+    name:"cityView",
+    params:{ state:state.replaceAll(" ",""), city:city.replaceAll(" ","")},
+    query:{
+      lat:result.geometry.coordinates[0],
+      lng:result.geometry.coordinates[1],
+      preview: true
+    }
+  });
+}
+
 const getSearchResults = ()=>{
   clearTimeout(queryTimeout);
   queryTimeout.value = setTimeout(async()=>{
     if(searchQuery.value !== ""){
       try{
-        const result = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${searchQuery.value}.json?access_token=${mapboxAPIKey}`)
+        const result = await axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${searchQuery.value}.json?access_token=${mapboxAPIKey}&types=place`)
         mapboxSearchResults.value = result.data.features;
       }catch(e){
         searchError.value = true;
