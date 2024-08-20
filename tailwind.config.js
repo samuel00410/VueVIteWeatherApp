@@ -11,7 +11,7 @@ export default {
     fontFamily: {
       TraditionalChinese: ["Noto Sans TC", "sans-serif"],
     },
-    screens: {
+    screen: {
       sm: "640px",
       md: "768px",
     },
