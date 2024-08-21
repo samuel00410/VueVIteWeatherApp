@@ -14,6 +14,12 @@
           @click="toggleModal"
           class="fa-solid fa-circle-info text-xl hover:text-weather-secondary duration-150 cursor-pointer"
         ></i>
+
+        <i
+          class="fa-solid fa-plus text-xl hover:text-weather-secondary duration-150 cursor-pointer"
+          @click="addCity"
+          v-if="route.query.preview"
+        ></i>
       </div>
 
       <!-- 提示框 -->
@@ -33,13 +39,44 @@
 </template>
 
 <script setup>
-import { RouterLink } from "vue-router";
-import BaseModal from "./BaseModal.vue";
-
 import { ref } from "vue";
+import { RouterLink, useRoute, useRouter } from "vue-router";
+import BaseModal from "./BaseModal.vue";
+import { v4 as uuidv4 } from "uuid";
+
 const showModal = ref(false);
+const savedCities = ref([]);
+const route = useRoute();
+const router = useRouter();
 
 const toggleModal = () => {
   showModal.value = !showModal.value;
+};
+
+// *加入追蹤(城市)
+const addCity = () => {
+  // 先查看本地存儲是否有城市
+  if (localStorage.getItem("savedCities")) {
+    savedCities.value = JSON.parse(localStorage.getItem("savedCities"));
+  }
+
+  // 找不到本地儲存裡的城市的話，就新增一個物件去儲存
+  const locationObj = {
+    id: uuidv4(),
+    state: route.params.state,
+    city: route.params.city,
+    coords: {
+      lat: route.query.lat,
+      lng: route.query.lng,
+    },
+  };
+
+  savedCities.value.push(locationObj);
+  localStorage.setItem("savedCities", JSON.stringify(savedCities.value));
+
+  // 儲存完後，刪除url上的preview參數
+  let query = Object.assign({}, route.query);
+  delete query.preview;
+  router.replace({ query });
 };
 </script>
