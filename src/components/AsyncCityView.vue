@@ -100,12 +100,21 @@
         </div>
       </div>
     </div>
+
+    <!-- 取消(刪除)該城追蹤 -->
+    <div
+      class="flex items-center gap-2 py-12 text-white cursor-pointer duration-150 hover:text-red-500"
+      @click="removeCity"
+    >
+      <i class="fa-solid fa-trash"></i>
+      <p>取消追蹤城市</p>
+    </div>
   </div>
 </template>
 
 <script setup>
 import axios from "axios";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
 
@@ -139,4 +148,22 @@ const getWeatherData = async () => {
 
 const weatherData = await getWeatherData();
 console.log("該地區的天氣資料:", weatherData);
+
+// *取消追蹤城市
+const router = useRouter();
+
+const removeCity = () => {
+  // !取得本地儲存的城市
+  const cities = JSON.parse(localStorage.getItem("savedCities"));
+
+  // !找到要刪除的城市(透過url的路徑找到該城市id去刪除)
+  const updatedCities = cities.filter((city) => {
+    return route.query.id !== city.id;
+  });
+
+  localStorage.setItem("savedCities", JSON.stringify(updatedCities));
+
+  // !重新導向到首頁
+  router.push({ name: "home" });
+};
 </script>

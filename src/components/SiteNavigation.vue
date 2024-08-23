@@ -77,6 +77,8 @@ const addCity = () => {
   // 儲存完後，刪除url上的preview參數
   let query = Object.assign({}, route.query);
   delete query.preview;
+  query.id = locationObj.id;
+
   router.replace({ query });
 };
 </script>
