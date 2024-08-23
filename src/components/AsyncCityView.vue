@@ -114,7 +114,7 @@ const getWeatherData = async () => {
     const weatherData = await axios.get(
       `https://api.openweathermap.org/data/3.0/onecall?lat=${
         route.query.lat
-      }&lon=${route.query.lng}&exclude={part}&appid=${
+      }&lon=${route.query.lon}&exclude={part}&appid=${
         import.meta.env.VITE_WEATHER_API_KEY
       }&units=metric`
     );

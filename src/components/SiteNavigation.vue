@@ -67,7 +67,7 @@ const addCity = () => {
     city: route.params.city,
     coords: {
       lat: route.query.lat,
-      lng: route.query.lng,
+      lon: route.query.lon,
     },
   };
 
