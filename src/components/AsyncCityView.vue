@@ -140,6 +140,9 @@ const getWeatherData = async () => {
       hour.currentTime = utc + 1000 * weatherData.data.timezone_offset;
     });
 
+    // 延遲閃爍一秒
+    await new Promise((res) => setTimeout(res, 1000));
+
     return weatherData.data;
   } catch (err) {
     console.log(err);
