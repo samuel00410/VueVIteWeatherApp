@@ -41,6 +41,9 @@ const getCities = async () => {
   // *等待所有城市的天氣資訊都取得後，再一次性顯示
   const weatherData = await Promise.all(requests);
 
+  //  *Flicker Delay(閃爍延遲)
+  await new Promise((res) => setTimeout(res, 1000));
+
   weatherData.forEach((value, index) => {
     savedCities.value[index].weather = value.data;
   });
